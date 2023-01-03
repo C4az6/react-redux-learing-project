@@ -1,75 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
+import App from './components/App'
+// 创建一个store对象,注意！！！createStore必须传入一个函数参数哦
+import { createStore } from 'redux';
+import { counter } from './redux/reducers'
+const store = createStore(counter);
+// console.log('stroe: ', store);
+// 通过dispatch发送一个消息，在reduers函数中通过action就能接收到
+// store.dispatch(increment());
+// store.dispatch(decrement());
 
-class App extends Component {
-  constructor(props) {
-    super(props)
-  }
-  state = {
-    count: 0,
-    isDisabled: false
-  }
+// 监听state变化，state发生变化后重新渲染页面
+store.subscribe(render);
 
-  increment = () => {
-    const num = this.select.value;
-    this.setState({
-      count: this.state.count += Number(num)
-    })
-  }
-
-  decrement = () => {
-    const num = this.select.value;
-    this.setState({
-      count: this.state.count -= Number(num)
-    })
-  }
-
-  incrementOdOdd = () => {
-    let num = this.select.value;
-    if (this.state.count % 2 === 0) {
-      this.setState({
-        count: this.state.count += Number(num)
-      })
-    }
-
-  }
-
-  incrementDelay = () => {
-    // 注意：this.select.value 是一个 string，通过 * 1 可以转换成Number类型
-    const num = this.select.value * 1;
-    this.setState({
-      isDisabled: true
-    });
-    setTimeout(() => {
-      this.setState({
-        count: this.state.count += num,
-        isDisabled: false
-      })
-    }, 2000)
-  }
-
-  render() {
-    const { count } = this.state;
-    return (
-      <div>
-        <h1>{count}</h1>
-        <select ref={select => this.select = select}>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-        </select>&nbsp;&nbsp;
-        <button onClick={this.increment}>+</button>
-        <button onClick={this.decrement}>-</button>&nbsp;&nbsp;
-        <button onClick={this.incrementOdOdd}>incrementOdOdd</button>&nbsp;&nbsp;
-        <button disabled={this.state.isDisabled} onClick={this.incrementDelay}>
-          {this.state.isDisabled ? '不许再点!' : 'incrementDelay'}
-        </button>
-      </div>
-    )
-  }
+function render() {
+  ReactDOM.render(
+    // 把创建好的store对象传递给App组件
+    <App store={store} ></App>,
+    document.getElementById('root')
+  )
 }
 
-ReactDOM.render(
-  <App></App>,
-  document.getElementById('root')
-)
+render();
