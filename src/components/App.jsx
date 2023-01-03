@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { increment, decrement } from '../redux/action';
+import { increment, decrement, incrementDelay } from '../redux/action';
 import { connect } from 'react-redux'
 
 // 把既有逻辑又有UI渲染的组件改成纯UI组件
@@ -31,9 +31,7 @@ class App extends Component {
 
   incrementDelay = () => {
     const selectValue = this.select.value * 1;
-    setTimeout(() => {
-      this.props.increment(selectValue);
-    }, 1500)
+    this.props.incrementDelay(selectValue)
   }
 
   render() {
@@ -61,5 +59,5 @@ export default connect(
   state => ({
     count: state
   }),
-  { increment, decrement }
+  { increment, decrement, incrementDelay }
 )(App)

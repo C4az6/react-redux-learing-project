@@ -17,3 +17,13 @@ export const decrement = (selectValue) => {
     data: selectValue
   }
 }
+
+// 创建一个异步action,这里返回一个函数，同步action返回是一个对象
+export const incrementDelay = (num) => {
+  // 返回一个箭头函数
+  return (dispatch) => {
+    setTimeout(() => {
+      dispatch(increment(num))
+    }, 1000)
+  }
+}
