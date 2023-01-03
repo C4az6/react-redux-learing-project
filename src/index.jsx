@@ -2,13 +2,17 @@
  * React Context 执行上下文 练习
  * 解决多层组件逐层传递props的问题
  * 
- * 下面创建Context的写法是 react@16.0之前的，16版本之后React提供了createContext() API 来创建context，后者性能更好
+ * 下面演示 React.createContext 创建Context的写法
+ * Provider：提供参数,通过 value属性提供
+ * Consumer：接收参数，通过回调函数
  */
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types'
 
+
+const context = React.createContext();
+console.log(">>>>>>> context: ", context);
 class Main extends React.Component {
   constructor(props) {
     super(props)
@@ -25,24 +29,31 @@ class Main extends React.Component {
 }
 
 class Title extends React.Component {
-  // 声明静态属性，这个静态属性是React规定的，必须这么写！ 声明需要拿到的数据
-  static contextTypes = {
-    color: PropTypes.string,
-    num: PropTypes.number
-  }
   componentDidMount() {
     console.log(">>>> context ", this.context);
     console.log(">>>>> this ", this);
   }
   render() {
     return (
-      <React.Fragment>
-        <h1>Title Page</h1>
-        <small>
-          颜色: {this.context.color}
-          今日收益: {this.context.num}
-        </small>
-      </React.Fragment>
+      <context.Consumer>
+        {
+          data => {
+            return (
+              <React.Fragment>
+                <h1>Title Page</h1>
+                <small>
+                  用户信息展示:
+                </small>
+                <hr />
+                <p>姓名：{data.name}</p>
+                <p>年龄：{data.age}</p>
+                <p>站点：{data.site}</p>
+                <p>{console.log('========', this.context)}</p>
+              </React.Fragment>
+            )
+          }
+        }
+      </context.Consumer>
     )
   }
 }
@@ -50,11 +61,7 @@ class App extends React.Component {
   constructor(props) {
     super(props)
   }
-  // 定义子组件接收的参数类型，注意是数据类型
-  static childContextTypes = {
-    color: PropTypes.string,
-    num: PropTypes.number
-  }
+
 
   getChildContext() {
     return {
@@ -76,6 +83,10 @@ class App extends React.Component {
 
 
 ReactDOM.render(
-  <App></App>,
+  (
+    <context.Provider value={{ name: 'alexander', age: 23, site: 'https://youkewang.top' }}>
+      <App></App>
+    </context.Provider>
+  ),
   document.getElementById('root')
 )
