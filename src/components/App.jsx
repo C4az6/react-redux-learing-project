@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { increment, decrement } from '../redux/action';
+import { connect } from 'react-redux'
 
+// 把既有逻辑又有UI渲染的组件改成纯UI组件
 class App extends Component {
   constructor(props) {
     super(props)
@@ -12,31 +14,30 @@ class App extends Component {
 
   increment = () => {
     const selectValue = this.select.value * 1;
-    this.props.store.dispatch(increment(selectValue));
+    this.props.increment(selectValue)
   }
 
   decrement = () => {
     const selectValue = this.select.value * 1;
-    this.props.store.dispatch(decrement(selectValue));
+    this.props.decrement(selectValue)
   }
 
   incrementOdOdd = () => {
     // 只有在当前数值为偶数的情况下才能增加
     const selectValue = this.select.value * 1;
-    const currentCount = this.props.store.getState();
-    console.log(">>>> currentCount: ", currentCount)
-    if (currentCount % 2 === 0) this.props.store.dispatch(increment(selectValue))
+    const currentCount = this.props.count;
+    if (currentCount % 2 === 0) this.props.increment(selectValue)
   }
 
   incrementDelay = () => {
     const selectValue = this.select.value * 1;
     setTimeout(() => {
-      this.props.store.dispatch(increment(selectValue));
+      this.props.increment(selectValue);
     }, 1500)
   }
 
   render() {
-    const count = this.props.store.getState();
+    const { count } = this.props
     return (
       <div>
         <h1>数值: {count}</h1>
@@ -56,4 +57,9 @@ class App extends Component {
   }
 }
 
-export default App
+export default connect(
+  state => ({
+    count: state
+  }),
+  { increment, decrement }
+)(App)
